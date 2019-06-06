@@ -3,7 +3,7 @@ package it.polito.tdp.borders.model;
 public class CountryAndNumber implements Comparable<CountryAndNumber> {
 	
 	private Country country ;
-	private int number ;
+	private int number ;	//numero di stati confinanti
 	
 	public CountryAndNumber(Country country, int number) {
 		super();

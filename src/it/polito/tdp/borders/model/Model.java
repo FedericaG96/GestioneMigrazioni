@@ -1,6 +1,7 @@
 package it.polito.tdp.borders.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +16,14 @@ import it.polito.tdp.borders.db.BordersDAO;
 
 public class Model {
 	
+	private Simulatore sim;
 	private Graph<Country, DefaultEdge> graph ;
 	private List<Country> countries ;
 	private Map<Integer,Country> countriesMap ;
 	
 	public Model() {
 		this.countriesMap = new HashMap<>() ;
+		this.sim = new Simulatore();
 
 	}
 	
@@ -47,10 +50,40 @@ public class Model {
 		List<CountryAndNumber> list = new ArrayList<>() ;
 		
 		for(Country c: graph.vertexSet()) {
-			list.add(new CountryAndNumber(c, graph.degreeOf(c))) ;
+			list.add(new CountryAndNumber(c, graph.degreeOf(c))) ;	//numero di stati confinanti con 'c' è pari al suo grado del vertice
 		}
 		Collections.sort(list);
 		return list ;
+	}
+
+	public List<Country> getCountries() {
+		List<Country> res = new ArrayList<Country>();
+		for(Country c : countriesMap.values()) {
+			res.add(c);
+		}
+		Collections.sort(res);
+		return res;
+	}
+
+	public void simula(Country partenza) {
+		sim.init(partenza, this.graph);
+		sim.run();
+	}
+
+	public int getLastT() {
+		return this.sim.getLastT();
+	}
+
+	public List<CountryAndNumber> getStanziali() {
+		Map<Country, Integer> stanziali = this.sim.getStanziali();
+		List<CountryAndNumber> stanzialiList = new ArrayList<CountryAndNumber>();
+		for(Country c : stanziali.keySet()) {
+			CountryAndNumber cn = new CountryAndNumber(c, stanziali.get(c));
+			stanzialiList.add(cn);
+		}
+		
+		Collections.sort(stanzialiList);
+		return stanzialiList;
 	}
 
 }
